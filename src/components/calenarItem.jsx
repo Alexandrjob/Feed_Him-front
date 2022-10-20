@@ -12,12 +12,20 @@ const castomtab = {
     p:0,
   };
 
-class CastomTab extends React.Component {
+class CalenarItem extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            day: props.day,
+        }; 
+    }
+
     render() {
         return (
             <Tab label={
             <div >
-                1<br />
+                {this.state.day}<br />
                 <span style={{ fontSize: "smaller" }}>ПН</span>
             </div>
             } sx={castomtab}/>
@@ -25,4 +33,4 @@ class CastomTab extends React.Component {
     }
 }
 
-export default CastomTab;
+export default CalenarItem;

@@ -6,7 +6,7 @@ import {
     Button,
     Typography
 } from '@mui/material';
-import "./style/lobby.css";
+import "../style/lobby.css";
 
 const buttons = [
     <Button key="one">Саша</Button>,
