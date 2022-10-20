@@ -21,8 +21,8 @@ function getWight() {
 
     var userAgentInfo = navigator.userAgent;
     var Agents = ["Android", "iPhone",
-                "SymbianOS", "Windows Phone",
-                "iPad", "iPod"];
+        "SymbianOS", "Windows Phone",
+        "iPad", "iPod"];
     var isPC = true;
 
     for (var i = 0; i < Agents.length; i++) {
@@ -32,18 +32,27 @@ function getWight() {
         }
     }
 
-    if(isPC){
-        return '50%';
+    if (isPC) {
+        return DESKTOP_SIZE;
     }
-    return '100%';
+    return MOBILE_SIZE;
 }
 
-class Main extends React.Component { 
+class Main extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentDate: new Date(),
+            targetItemDay: new Date().getDate()
+        };
+    }
+
     render() {
         return (
             <Container sx={container}>
                 <Typography sx={{ marginBottom: '20', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
-                {/* <Calendar /> */}
+                {<Calendar targetDay={this.state.targetItemDay} />}
                 <Typography sx={{ marginTop: '20' }} variant="h6">Сегодня</Typography>
                 <TodoList />
             </Container >
