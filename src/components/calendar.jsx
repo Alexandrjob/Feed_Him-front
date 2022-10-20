@@ -1,11 +1,10 @@
 const React = require("react");
 import {
     Box,
-    Tabs,
-    Tab
+    Tabs
 } from '@mui/material';
 
-import CastomTab from "./CastomTab"
+import CastomTab from "./castomTab"
 
 class Calendar extends React.Component {
     render() {
@@ -16,32 +15,6 @@ class Calendar extends React.Component {
                     scrollButtons={false}
                     aria-label="scrollable prevent tabs example"
                     centered>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
-                    <CastomTab/>
                     <CastomTab/>
                     <CastomTab/>
                     <CastomTab/>
