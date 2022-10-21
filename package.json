@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "personalportal",
+  "name": "task-tracker-cat",
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.19.3",
