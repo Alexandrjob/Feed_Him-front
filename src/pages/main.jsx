@@ -1,10 +1,13 @@
 const React = require("react");
 import {
+    Box,
     Container,
     Typography
 } from '@mui/material';
-import Calendar from "../components/calendar";
-import TodoList from "../components/todoList";
+import TabContext from '@mui/lab/TabContext';
+import TabPanel from '@mui/lab/TabPanel';
+
+import TabListCalendar from "../components/tabListCalendar";
 
 const container = {
     position: 'absolute',
@@ -39,22 +42,36 @@ function getWight() {
 }
 
 class Main extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            currentDate: new Date(),
-            targetItemDay: new Date().getDate()
+            //targetItemDay: new Date().getDate(),
+            value: new Date().getDate().toString(),
         };
+
+        this.handleChange = this.handleChange.bind(this);
     }
+
+    handleChange(event, newValue) {
+        console.log(newValue);
+        this.setState({
+            value: newValue
+        });
+    };
 
     render() {
         return (
             <Container sx={container}>
                 <Typography sx={{ marginBottom: '20', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
-                {<Calendar targetDay={this.state.targetItemDay} />}
-                <Typography sx={{ marginTop: '20' }} variant="h6">Сегодня</Typography>
-                <TodoList />
+                <TabContext value={this.state.value}>
+                    <Box >
+                         <TabListCalendar onChange={this.handleChange} /> 
+                    </Box>
+                    <Typography sx={{ marginTop: '20' }} variant="h6">Сегодня</Typography>
+                    <TabPanel value="1">Item One</TabPanel>
+                    <TabPanel value="2">Item Two</TabPanel>
+                    <TabPanel value="3">Item Three</TabPanel>
+                </TabContext>    
             </Container >
         )
     }
