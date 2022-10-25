@@ -6,28 +6,18 @@ import {
 class TodoCheckBox extends React.Component {
 
     constructor(props) {
-        super(props)
-        this.state = {
-            disabled: props.disabled,
-            checked: props.checked,
-            labelTextId: props.labelTextId
-        }
-    }
-
-    hanldeChangeCheckBox = e => {
-        this.setState({
-            checked: e.currentTarget.checked 
-        })
+        super(props);
     }
 
     render() {
         return (
             <Checkbox
                 edge="end"
-                inputProps={{ "aria-labelledby": this.state.labelTextId }}
-                disabled={this.state.disabled}
-                checked={this.state.checked}
-                onChange={this.hanldeChangeCheckBox} />
+                name={this.props.name}
+                inputProps={{ "aria-labelledby": this.props.labelTextId }}
+                disabled={this.props.disabled}
+                checked={this.props.checked}
+                onChange={this.props.handleChange} />
         );
     }
 }
