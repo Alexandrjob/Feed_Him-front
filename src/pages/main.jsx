@@ -2,80 +2,12 @@ const React = require("react");
 import {
     Box,
     Container,
-    Typography,
-    List
+    Typography
 } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabPanelTodo from '../components/tabPanelTodo';
-import TabPanel from '@mui/lab/TabPanel';
-import TodoItem from '../components/todoItem';
-import TabListCalendar from "../components/tabListCalendar";
 
-const data = [
-    {
-        id: 1,
-        name: "Sahsa",
-        number: 1,
-        date: "2022-10-16 10:51:38",
-        status: 0
-    },
-    {
-        id: 2,
-        name: "Ira",
-        number: 2,
-        date: "2022-10-16 10:51:38",
-        status: 1
-    },
-    {
-        id: 3,
-        name: "Sasha",
-        number: 3,
-        date: "2022-10-16 10:51:38",
-        status: 1
-    },
-    {
-        id: 4,
-        name: "Sasha",
-        number: 1,
-        date: "2022-10-16 10:51:38",
-        status: 0
-    },
-    {
-        id: 5,
-        name: "Sasha",
-        number: 2,
-        date: "2022-10-16 10:51:38",
-        status: 1
-    },
-    {
-        id: 6,
-        name: "Sasha",
-        number: 3,
-        date: "2022-10-16 10:51:38",
-        status: 1
-    },
-    {
-        id: 7,
-        name: "Sasha",
-        number: 1,
-        date: "2022-10-16 10:51:38",
-        status: 0
-    },
-    {
-        id: 8,
-        name: "Sasha",
-        number: 2,
-        date: "2022-10-16 10:51:38",
-        status: 0
-    },
-    {
-        id: 9,
-        name: "Sasha",
-        number: 3,
-        date: "2022-10-16 10:51:38",
-        status: 1
-    }
-]
+import TabListCalendar from "../components/tabListCalendar";
 
 const container = {
     position: 'absolute',
@@ -83,11 +15,6 @@ const container = {
     left: '50%',
     top: '10%',
     transform: 'translate(-50%, -20%)',
-};
-
-const list = {
-    width: "100%",
-    centered: "true"
 };
 
 //Копипаст, быстрое решение.https://russianblogs.com/article/2360155478/
@@ -114,24 +41,16 @@ function getWight() {
     return MOBILE_SIZE;
 }
 
-function getdaysInMonthArray(currentDate) {
-    var daysInMonth = [];
-    const days = currentDate.daysInMonth();
-
-    for (let i = 0; i < days; i++) {
-        daysInMonth[i] = i + 1;
-    }
-
-    return daysInMonth;
-}
-
-//Метод объединяет 3 обьекта в один начиная с первого(метод является говно кодом).
+//Метод объединяет 3 обьекта в один начиная с первого(Внимание: говно код).
 function getFormatData() {
     let formatData = [];
     let box = [];
     let count = 0;
     let countDay = 0;
 
+    //Массив формируется следующим образом =>
+    //В каждой ячейче по 3 массива.
+    //Каждая ячейка олицетворяет один день.
     for (let i = 0; i < data.length; i++) {
         if (countDay >= 3) {
             formatData[count] = box;
@@ -146,21 +65,39 @@ function getFormatData() {
             formatData[count] = box;
         }
     }
-
-    // console.log(formatData);
+    console.log(formatData);
     return formatData;
+}
+
+const data = [];
+
+function initData() {
+    const names = ["Саша", "Наташа", "Лариса", "Катя"];
+    const days = new Date().daysInMonth() * 3 + 1;
+    for (let i = 0; i < days; i++) {
+        var box = {
+            id: i,
+            namber: Math.floor(Math.random() * 3) + 1,
+            waiterName: names[Math.floor(Math.random() * 4)],
+            date: new Date(),
+            status: Math.floor(Math.random() * 2),
+        };
+
+        data[i] = box;
+        box = [];
+    }
 }
 
 class Main extends React.Component {
     constructor(props) {
         super(props);
+        initData();
+
         this.state = {
-            value: "2",
-            daysInMonthArray: [],
+            value: new Date().getDate().toString(),
             disabledItem: false,
             formatData: getFormatData(),
         };
-        this.state.daysInMonthArray = getdaysInMonthArray(new Date());
         this.handleChangeTab = this.handleChangeTab.bind(this);
         this.handleChangeCheckBox = this.handleChangeCheckBox.bind(this);
     }
@@ -173,6 +110,7 @@ class Main extends React.Component {
 
     handleChangeCheckBox(event) {
         let data = this.state.formatData;
+        //pach - это поле, генерируемое вот так name={index + ' ' + item[0].id} 
         let pach = event.target.name.split(' ');
 
         for (let i = 0; i < data.length; i++) {
@@ -194,18 +132,8 @@ class Main extends React.Component {
                         <TabListCalendar onChange={this.handleChangeTab} />
                     </Box>
                     <Typography sx={{ marginTop: '20' }} variant="h6">Сегодня</Typography>
-                    {/* <TabPanelTodo daysInMonthArray={this.state.daysInMonthArray} /> */}
-
-                    {this.state.formatData.map((item, index) =>
-                        <TabPanel key={(index + 1).toString()} value={(index + 1).toString()}>
-                            <List dense sx={list} key={index}>
-                                <TodoItem keyy={item[0].id} name={index + ' ' + item[0].id} value={item[0].id} date={item[0].date} disabled={false} checked={item[0].status} handleChange={this.handleChangeCheckBox} />
-                                <TodoItem keyy={item[1].id} name={index + ' ' + item[1].id} value={item[1].id} date={item[1].date} disabled={false} checked={item[1].status} handleChange={this.handleChangeCheckBox} />
-                                <TodoItem keyy={item[2].id} name={index + ' ' + item[2].id} value={item[2].id} date={item[2].date} disabled={false} checked={item[2].status} handleChange={this.handleChangeCheckBox} />
-                            </List>
-                        </TabPanel>
-                    )}
-
+                    <TabPanelTodo data={this.state.formatData}
+                        handleChangeCheckBox={this.handleChangeCheckBox} />
                 </TabContext>
             </Container >
         )

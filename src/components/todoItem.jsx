@@ -28,7 +28,7 @@ class TodoItem extends React.Component {
                 <ListItemText
                     id={labelTextId}
                     primary={`${this.props.value} прием`}
-                    secondary={this.props.date}
+                    secondary={this.props.date + ' ' + this.props.waiterName}
                 />
             </ListItem>
         );

@@ -13,7 +13,13 @@ const CastomTab = styled(Tab)`
     min-width: 48;
     margin-left: 8;
     padding: 0;
+    justify-content = center;
 `;
+
+const sxTab = {
+    "& button.Mui-selected": { backgroundColor: "#BEDEF5", wight: "100" },
+    ".MuiTabs-indicator": { visibility: "hidden" }
+};
 
 function getLabel(day) {
     return (
@@ -27,22 +33,22 @@ function getLabel(day) {
 //Генерируется массив основанный на количестве дней в месяце(number,name).
 function getDaysArray() {
     const days = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
-        const date = new Date();
-        const daysInMonth = date.daysInMonth();               
-        const todayDayNumber = date.getDay();
+    const date = new Date();
+    const daysInMonth = date.daysInMonth();
+    const todayDayNumber = date.getDay();
 
-        var arrayTab = [];
-        var index = todayDayNumber;
+    var arrayTab = [];
+    var index = todayDayNumber;
 
-        for (var i = 0; i < daysInMonth; i++) {
-            arrayTab.push({
-                number: (i + 1),
-                name: days[index++]
-            })
-            if (index == 7) index = 0;
-        }
+    for (var i = 0; i < daysInMonth; i++) {
+        arrayTab.push({
+            number: (i + 1),
+            name: days[index++]
+        })
+        if (index == 7) index = 0;
+    }
 
-        return arrayTab;
+    return arrayTab;
 }
 
 //В sx настраиватся отобржение выделенного таба и скрывается индикатор.
@@ -56,16 +62,7 @@ function TabListCalendar(props) {
             scrollButtons={false}
             allowScrollButtonsMobile
             variant="scrollable"
-            style={{ justifyContent: 'center' }}
-            sx={{
-                "& button.Mui-selected": { backgroundColor: "#BEDEF5", wight:"100" },
-                ".MuiTabs-indicator": { visibility: "hidden",
-                
-                "& div.MuiTabs-scroller": {
-                    '&.MuiTabs-scrollableX': { flexGrow: '0' },
-                 }
-             }
-            }}>
+            sx={sxTab}>
             {arrayDays.map(day =>
                 <CastomTab label={getLabel(day)} key={day.number} tabIndex={day.number} value={day.number.toString()} />
             )}
