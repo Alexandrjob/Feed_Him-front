@@ -12,11 +12,14 @@ class TodoItem extends React.Component {
     }
     render() {
         const labelTextId = `checkbox-list-secondary-label-${this.props.keyy}`;
-        let textSecondary = this.props.date + ' ' + this.props.waiterName;
+        let textSecondary;
         if (this.props.date == null || this.props.waiterName == null) {
             textSecondary = "Не покормлено";
         }
-
+        else {
+            var date = getFormatString(this.props.date);
+            textSecondary = date + ' ' + this.props.waiterName;
+        }
         return (
             <ListItem
                 key={this.props.keyy}
@@ -38,4 +41,8 @@ class TodoItem extends React.Component {
     }
 }
 
+function getFormatString(dateStr) {
+    let date = new Date(dateStr).toLocaleString().slice(0, -3);
+    return date;
+}
 export default TodoItem;

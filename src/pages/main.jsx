@@ -27,7 +27,7 @@ function getFormatData(data) {
     //Массив формируется следующим образом =>
     //В каждой ячейче по 3 массива.
     //Каждая ячейка олицетворяет один день.
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length + 1; i++) {
         if (countDay >= 3) {
             formatData[count] = box;
             box = [];
@@ -50,6 +50,7 @@ class Main extends React.Component {
         container.width = props.width;
 
         this.state = {
+            url: "https://localhost:7146/api/diets",
             loading: true,
             value: new Date().getDate().toString(),
             disabledItem: false,
@@ -61,7 +62,7 @@ class Main extends React.Component {
 
     loadData() {
         var xhr = new XMLHttpRequest();
-        xhr.open("get", "https://localhost:5001/api/diets", true);
+        xhr.open("get", this.state.url, true);
         xhr.onload = function () {
             var result = JSON.parse(xhr.responseText);
             this.setState({ formatData: getFormatData(result.value), loading: false });
@@ -72,6 +73,33 @@ class Main extends React.Component {
     componentDidMount() {
         this.setState({ loading: true });
         this.loadData();
+    }
+
+    send(data) {
+        const xhr = new XMLHttpRequest();
+
+        // POST-запрос к ресурсу /user
+        xhr.open("POST", this.state.url);
+        xhr.setRequestHeader("content-type", "application/json");
+
+        // обработчик получения ответа сервера
+        xhr.onload = () => {
+            if (xhr.status == 200) {
+                console.log(xhr.responseText);
+            } else {
+                console.log("Server response: ", xhr.statusText);
+            }
+        };
+
+        var jsonData = JSON.stringify({
+            id: data.id,
+            servingNumber: data.servingNumber,
+            waiterName: data.waiterName,
+            date: data.date,
+            status: Boolean(data.status),
+          });
+
+        xhr.send(jsonData);     // отправляем значение user в методе send
     }
 
     handleChangeTab(event, newValue) {
@@ -91,11 +119,13 @@ class Main extends React.Component {
             }
             this.state.formatData[pach[0]][i].status = Number(event.target.checked);
             if (event.target.checked) {
-                this.addFormatData(data, pach, i, this.props.waiterName, new Date().toLocaleString().slice(0, -3));
+                this.addFormatData(data, pach, i, this.props.waiterName, new Date());
+                this.send(data[pach[0]][i]);
                 break;
             }
 
             this.addFormatData(data, pach, i, null, null);
+            this.send(data[pach[0]][i]);
             break;
         }
     };
