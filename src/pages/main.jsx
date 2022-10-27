@@ -9,37 +9,13 @@ import TabPanelTodo from '../components/tabPanelTodo';
 
 import TabListCalendar from "../components/tabListCalendar";
 
-const container = {
+var container = {
     position: 'absolute',
-    width: getWight(),
+    width: "50%",
     left: '50%',
     top: '10%',
     transform: 'translate(-50%, -20%)',
 };
-
-//Копипаст, быстрое решение.https://russianblogs.com/article/2360155478/
-function getWight() {
-    const MOBILE_SIZE = '100%';
-    const DESKTOP_SIZE = '50%';
-
-    var userAgentInfo = navigator.userAgent;
-    var Agents = ["Android", "iPhone",
-        "SymbianOS", "Windows Phone",
-        "iPad", "iPod"];
-    var isPC = true;
-
-    for (var i = 0; i < Agents.length; i++) {
-        if (userAgentInfo.indexOf(Agents[i]) > 0) {
-            isPC = false;
-            break;
-        }
-    }
-
-    if (isPC) {
-        return DESKTOP_SIZE;
-    }
-    return MOBILE_SIZE;
-}
 
 //Метод объединяет 3 обьекта в один начиная с первого(Внимание: говно код).
 function getFormatData(data) {
@@ -65,13 +41,14 @@ function getFormatData(data) {
             formatData[count] = box;
         }
     }
-    console.log(formatData);
     return formatData;
 }
 
 class Main extends React.Component {
     constructor(props) {
         super(props);
+        container.width = props.width;
+
         this.state = {
             loading: true,
             value: new Date().getDate().toString(),
@@ -114,7 +91,7 @@ class Main extends React.Component {
             }
             this.state.formatData[pach[0]][i].status = Number(event.target.checked);
             if (event.target.checked) {
-                this.addFormatData(data, pach, i, "Саша", new Date().toLocaleString().slice(0, -3));
+                this.addFormatData(data, pach, i, this.props.waiterName, new Date().toLocaleString().slice(0, -3));
                 break;
             }
 
