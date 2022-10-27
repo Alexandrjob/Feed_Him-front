@@ -9,40 +9,16 @@ import TabPanelTodo from '../components/tabPanelTodo';
 
 import TabListCalendar from "../components/tabListCalendar";
 
-const container = {
+var container = {
     position: 'absolute',
-    width: getWight(),
+    width: "50%",
     left: '50%',
     top: '10%',
     transform: 'translate(-50%, -20%)',
 };
 
-//Копипаст, быстрое решение.https://russianblogs.com/article/2360155478/
-function getWight() {
-    const MOBILE_SIZE = '100%';
-    const DESKTOP_SIZE = '50%';
-
-    var userAgentInfo = navigator.userAgent;
-    var Agents = ["Android", "iPhone",
-        "SymbianOS", "Windows Phone",
-        "iPad", "iPod"];
-    var isPC = true;
-
-    for (var i = 0; i < Agents.length; i++) {
-        if (userAgentInfo.indexOf(Agents[i]) > 0) {
-            isPC = false;
-            break;
-        }
-    }
-
-    if (isPC) {
-        return DESKTOP_SIZE;
-    }
-    return MOBILE_SIZE;
-}
-
 //Метод объединяет 3 обьекта в один начиная с первого(Внимание: говно код).
-function getFormatData() {
+function getFormatData(data) {
     let formatData = [];
     let box = [];
     let count = 0;
@@ -51,7 +27,7 @@ function getFormatData() {
     //Массив формируется следующим образом =>
     //В каждой ячейче по 3 массива.
     //Каждая ячейка олицетворяет один день.
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length + 1; i++) {
         if (countDay >= 3) {
             formatData[count] = box;
             box = [];
@@ -65,41 +41,65 @@ function getFormatData() {
             formatData[count] = box;
         }
     }
-    console.log(formatData);
     return formatData;
-}
-
-const data = [];
-
-function initData() {
-    const names = ["Саша", "Наташа", "Лариса", "Катя"];
-    const days = new Date().daysInMonth() * 3 + 1;
-    for (let i = 0; i < days; i++) {
-        var box = {
-            id: i,
-            namber: Math.floor(Math.random() * 3) + 1,
-            waiterName: names[Math.floor(Math.random() * 4)],
-            date: new Date(),
-            status: Math.floor(Math.random() * 2),
-        };
-
-        data[i] = box;
-        box = [];
-    }
 }
 
 class Main extends React.Component {
     constructor(props) {
         super(props);
-        initData();
+        container.width = props.width;
 
         this.state = {
+            url: "https://localhost:7146/api/diets",
+            loading: true,
             value: new Date().getDate().toString(),
             disabledItem: false,
-            formatData: getFormatData(),
+            formatData: [],
         };
         this.handleChangeTab = this.handleChangeTab.bind(this);
         this.handleChangeCheckBox = this.handleChangeCheckBox.bind(this);
+    }
+
+    loadData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", this.state.url, true);
+        xhr.onload = function () {
+            var result = JSON.parse(xhr.responseText);
+            this.setState({ formatData: getFormatData(result.value), loading: false });
+        }.bind(this);
+        xhr.send();
+    }
+
+    componentDidMount() {
+        this.setState({ loading: true });
+        this.loadData();
+    }
+
+    send(data) {
+        const xhr = new XMLHttpRequest();
+
+        // POST-запрос к ресурсу /user
+        xhr.open("POST", this.state.url);
+        xhr.setRequestHeader("content-type", "application/json");
+
+        // обработчик получения ответа сервера
+        xhr.onload = () => {
+            if (xhr.status == 200) {
+                console.log(xhr.responseText);
+            } else {
+                console.log("Server response: ", xhr.statusText);
+            }
+        };
+
+        var jsonData = JSON.stringify({
+            id: data.id,
+            servingNumber: data.servingNumber,
+            waiterName: data.waiterName,
+            date: data.date,
+            status: Boolean(data.status),
+          });
+
+        xhr.send(jsonData);     // отправляем значение user в методе send
     }
 
     handleChangeTab(event, newValue) {
@@ -110,7 +110,7 @@ class Main extends React.Component {
 
     handleChangeCheckBox(event) {
         let data = this.state.formatData;
-        //pach - это поле, генерируемое вот так name={index + ' ' + item[0].id} 
+        //pach - это поле, генерируемое вот так name={index + ' ' + item[0].id}  
         let pach = event.target.name.split(' ');
 
         for (let i = 0; i < data.length; i++) {
@@ -118,10 +118,23 @@ class Main extends React.Component {
                 continue;
             }
             this.state.formatData[pach[0]][i].status = Number(event.target.checked);
-            this.setState({ data });
+            if (event.target.checked) {
+                this.addFormatData(data, pach, i, this.props.waiterName, new Date());
+                this.send(data[pach[0]][i]);
+                break;
+            }
+
+            this.addFormatData(data, pach, i, null, null);
+            this.send(data[pach[0]][i]);
             break;
         }
     };
+
+    addFormatData(data, pach, i, name, date) {
+        data[pach[0]][i].waiterName = name;
+        data[pach[0]][i].date = date;
+        this.setState({ data });
+    }
 
     render() {
         return (
@@ -132,8 +145,11 @@ class Main extends React.Component {
                         <TabListCalendar onChange={this.handleChangeTab} />
                     </Box>
                     <Typography sx={{ marginTop: '20' }} variant="h6">Сегодня</Typography>
-                    <TabPanelTodo data={this.state.formatData}
-                        handleChangeCheckBox={this.handleChangeCheckBox} />
+                    {this.state.loading
+                        ? <Typography sx={{ marginBottom: '20', textAlign: 'center' }} variant="h4">Грузим</Typography>
+                        : <TabPanelTodo data={this.state.formatData} value={this.state.value}
+                            handleChangeCheckBox={this.handleChangeCheckBox} />
+                    }
                 </TabContext>
             </Container >
         )
