@@ -42,7 +42,7 @@ function getWight() {
 }
 
 //Метод объединяет 3 обьекта в один начиная с первого(Внимание: говно код).
-function getFormatData() {
+function getFormatData(data) {
     let formatData = [];
     let box = [];
     let count = 0;
@@ -69,37 +69,32 @@ function getFormatData() {
     return formatData;
 }
 
-const data = [];
-
-function initData() {
-    const names = ["Саша", "Наташа", "Лариса", "Катя"];
-    const days = new Date().daysInMonth() * 3 + 1;
-    for (let i = 0; i < days; i++) {
-        var box = {
-            id: i,
-            namber: Math.floor(Math.random() * 3) + 1,
-            waiterName: names[Math.floor(Math.random() * 4)],
-            date: new Date(),
-            status: Math.floor(Math.random() * 2),
-        };
-
-        data[i] = box;
-        box = [];
-    }
-}
-
 class Main extends React.Component {
     constructor(props) {
         super(props);
-        initData();
-
         this.state = {
+            loading: true,
             value: new Date().getDate().toString(),
             disabledItem: false,
-            formatData: getFormatData(),
+            formatData: [],
         };
         this.handleChangeTab = this.handleChangeTab.bind(this);
         this.handleChangeCheckBox = this.handleChangeCheckBox.bind(this);
+    }
+
+    loadData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", "https://localhost:5001/api/diets", true);
+        xhr.onload = function () {
+            var result = JSON.parse(xhr.responseText);
+            this.setState({ formatData: getFormatData(result.value), loading: false });
+        }.bind(this);
+        xhr.send();
+    }
+
+    componentDidMount() {
+        this.setState({ loading: true });
+        this.loadData();
     }
 
     handleChangeTab(event, newValue) {
@@ -110,7 +105,7 @@ class Main extends React.Component {
 
     handleChangeCheckBox(event) {
         let data = this.state.formatData;
-        //pach - это поле, генерируемое вот так name={index + ' ' + item[0].id} 
+        //pach - это поле, генерируемое вот так name={index + ' ' + item[0].id}  
         let pach = event.target.name.split(' ');
 
         for (let i = 0; i < data.length; i++) {
@@ -118,10 +113,21 @@ class Main extends React.Component {
                 continue;
             }
             this.state.formatData[pach[0]][i].status = Number(event.target.checked);
-            this.setState({ data });
+            if (event.target.checked) {
+                this.addFormatData(data, pach, i, "Саша", new Date().toLocaleString().slice(0, -3));
+                break;
+            }
+
+            this.addFormatData(data, pach, i, null, null);
             break;
         }
     };
+
+    addFormatData(data, pach, i, name, date) {
+        data[pach[0]][i].waiterName = name;
+        data[pach[0]][i].date = date;
+        this.setState({ data });
+    }
 
     render() {
         return (
@@ -132,8 +138,11 @@ class Main extends React.Component {
                         <TabListCalendar onChange={this.handleChangeTab} />
                     </Box>
                     <Typography sx={{ marginTop: '20' }} variant="h6">Сегодня</Typography>
-                    <TabPanelTodo data={this.state.formatData}
-                        handleChangeCheckBox={this.handleChangeCheckBox} />
+                    {this.state.loading
+                        ? <Typography sx={{ marginBottom: '20', textAlign: 'center' }} variant="h4">Грузим</Typography>
+                        : <TabPanelTodo data={this.state.formatData} value={this.state.value}
+                            handleChangeCheckBox={this.handleChangeCheckBox} />
+                    }
                 </TabContext>
             </Container >
         )

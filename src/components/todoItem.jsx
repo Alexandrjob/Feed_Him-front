@@ -10,9 +10,12 @@ class TodoItem extends React.Component {
     constructor(props) {
         super(props);
     }
-
     render() {
         const labelTextId = `checkbox-list-secondary-label-${this.props.keyy}`;
+        let textSecondary = this.props.date + ' ' + this.props.waiterName;
+        if (this.props.date == null || this.props.waiterName == null) {
+            textSecondary = "Не покормлено";
+        }
 
         return (
             <ListItem
@@ -28,7 +31,7 @@ class TodoItem extends React.Component {
                 <ListItemText
                     id={labelTextId}
                     primary={`${this.props.value} прием`}
-                    secondary={this.props.date + ' ' + this.props.waiterName}
+                    secondary={textSecondary}
                 />
             </ListItem>
         );
