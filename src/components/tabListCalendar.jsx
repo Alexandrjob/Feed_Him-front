@@ -10,8 +10,8 @@ const CastomTab = styled(Tab)`
     background-color: #D0EBF3;
     color: #7B9FC4;
     border-radius: 10px;
-    min-width: 48;
-    margin-left: 8;
+    min-width: 48px;
+    margin-left: 8px;
     padding: 0;
     justify-content = center;
 `;
