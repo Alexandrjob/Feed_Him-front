@@ -91,11 +91,16 @@ class Main extends React.Component {
             }
         };
 
+        var normalTypeDate = new Date(Date(data.date));
+        //Добавляем часы в соответствии с часовым поясом. 
+        //Причина: парсинг json отнимает часовой пояс.
+        normalTypeDate.setUTCHours(normalTypeDate.getUTCHours() + 7);
+
         var jsonData = JSON.stringify({
             id: data.id,
             servingNumber: data.servingNumber,
             waiterName: data.waiterName,
-            date: data.date,
+            date: normalTypeDate,
             status: Boolean(data.status),
           });
 
