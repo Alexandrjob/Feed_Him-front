@@ -90,7 +90,7 @@ class Main extends React.Component {
                 console.log("Server response: ", xhr.statusText);
             }
         };
-  
+
         var normalTypeDate = new Date(Date(data.date));
         //Добавляем часы в соответствии с часовым поясом. 
         //Причина: парсинг json отнимает часовой пояс.
@@ -103,7 +103,7 @@ class Main extends React.Component {
             date: normalTypeDate,
             status: Boolean(data.status),
           });
-          console.log(jsonData);
+
         xhr.send(jsonData);     // отправляем значение user в методе send
     }
 
