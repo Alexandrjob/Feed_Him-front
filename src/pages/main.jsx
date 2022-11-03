@@ -19,29 +19,40 @@ var container = {
 
 //Метод объединяет 3 обьекта в один начиная с первого(Внимание: говно код).
 function getFormatData(data) {
+    const trueNumberServings = getNumberServings(data);
     let formatData = [];
     let box = [];
-    let count = 0;
     let countDay = 0;
 
     //Массив формируется следующим образом =>
-    //В каждой ячейче по 3 массива.
+    //В каждой ячейче(box) по 3 массива.
     //Каждая ячейка олицетворяет один день.
-    for (let i = 0; i < data.length + 1; i++) {
-        if (countDay >= 3) {
-            formatData[count] = box;
+    for (let i = 0; i < data.length; i++) {
+        box[data[i].servingNumber - 1] = data[i];
+        if (data[i].servingNumber == trueNumberServings) {
+            formatData[countDay] = box;
             box = [];
-            countDay = 0;
-            count++;
-        }
-        box[countDay] = data[i];
 
-        countDay++;
-        if (i == 8) {
-            formatData[count] = box;
+            countDay++;
         }
     }
+
     return formatData;
+}
+
+//Возвращает количество порций в день.
+function getNumberServings(data) {
+    //Вряд-ли коту нужно будет давать больше 10 порций в день.
+    const estimatedNumberServings = 10;
+    let max = 0;
+    for (let i = 0; i < estimatedNumberServings; i++) {
+        if (data[i].servingNumber > data[max].servingNumber) {
+            max = i;
+        }
+    }
+
+    //Прибавление происходит потому-что порция начинается с 1-ой.
+    return max + 1;
 }
 
 class Main extends React.Component {
@@ -97,7 +108,7 @@ class Main extends React.Component {
             waiterName: data.waiterName,
             date: data.date,
             status: Boolean(data.status),
-          });
+        });
 
         xhr.send(jsonData);     // отправляем значение user в методе send
     }
@@ -109,31 +120,33 @@ class Main extends React.Component {
     };
 
     handleChangeCheckBox(event) {
-        let data = this.state.formatData;
         //pach - это поле, генерируемое вот так name={index + ' ' + item[0].id}  
         let pach = event.target.name.split(' ');
 
-        for (let i = 0; i < data.length; i++) {
-            if (data[pach[0]][i].id != pach[1]) {
-                continue;
-            }
-            this.state.formatData[pach[0]][i].status = Number(event.target.checked);
-            if (event.target.checked) {
-                this.addFormatData(data, pach, i, this.props.waiterName, new Date());
-                this.send(data[pach[0]][i]);
-                break;
-            }
+        let diet = this.state.formatData[pach[0]][pach[1]];
 
-            this.addFormatData(data, pach, i, null, null);
-            this.send(data[pach[0]][i]);
-            break;
+        if (event.target.checked) {
+            diet = this.updateDietInFormatData(diet, pach, this.props.waiterName, new Date(), event.target.checked);
+            this.send(diet);
+            return;
         }
-    };
 
-    addFormatData(data, pach, i, name, date) {
-        data[pach[0]][i].waiterName = name;
-        data[pach[0]][i].date = date;
-        this.setState({ data });
+        diet = this.updateDietInFormatData(diet, pach, null, null, null);
+        this.send(diet);
+    }
+
+    updateDietInFormatData(diet, pach, name, date, checked) {
+        diet.waiterName = name;
+        diet.date = date;
+        diet.status = checked;
+
+        //Рука лицо, ну а как по другому? только хуками, но пока этим заниматься не буду.
+        let updateFormatData = this.state.formatData;
+        updateFormatData[pach[0]][pach[1]] = diet;
+
+        this.setState({ formatData: updateFormatData });
+
+        return diet;
     }
 
     render() {

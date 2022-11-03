@@ -71,8 +71,6 @@ class App extends React.Component {
 
         this.state.waiterName = name;
         this.setState({});
-        console.log(this.state.waiterName);
-        console.log(document.cookie);
     }
 
     render() {
