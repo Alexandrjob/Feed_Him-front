@@ -46,13 +46,12 @@ function getNumberServings(data) {
     const estimatedNumberServings = 10;
     let max = 0;
     for (let i = 0; i < estimatedNumberServings; i++) {
-        if (data[i].servingNumber > data[max].servingNumber) {
-            max = i;
+        if (data[i].servingNumber > max) {
+            max = data[i].servingNumber;
         }
     }
 
-    //Прибавление происходит потому-что порция начинается с 1-ой.
-    return max + 1;
+    return max;
 }
 
 class Main extends React.Component {
@@ -157,14 +156,14 @@ class Main extends React.Component {
     render() {
         return (
             <Container sx={container}>
-                <Typography sx={{ marginBottom: '20', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
+                <Typography sx={{ marginBottom: '20px',marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
                 <TabContext value={this.state.value}>
                     <Box >
                         <TabListCalendar onChange={this.handleChangeTab} />
                     </Box>
-                    <Typography sx={{ marginTop: '20' }} variant="h6">Сегодня</Typography>
+                    <Typography sx={{ marginTop: '20px' }} variant="h6">Сегодня</Typography>
                     {this.state.loading
-                        ? <Typography sx={{ marginBottom: '20', textAlign: 'center' }} variant="h4">Грузим</Typography>
+                        ? <Typography sx={{ marginBottom: '20px', textAlign: 'center' }} variant="h4">Грузим</Typography>
                         : <TabPanelTodo data={this.state.formatData} value={this.state.value}
                             handleChangeCheckBox={this.handleChangeCheckBox} />
                     }
