@@ -2,11 +2,6 @@
 import Lobby from "./pages/lobby";
 import Main from "./pages/main";
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
 const names = ["Саша", "Катя", "Наташа", "Лариса"];
 
 // возвращает куки с указанным name,
@@ -46,7 +41,7 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             waiterName: null,
             width: getWight(),
         };
@@ -69,8 +64,7 @@ class App extends React.Component {
         let name = names[id];
         document.cookie = "waiterName=" + name;
 
-        this.state.waiterName = name;
-        this.setState({});
+        this.setState({ waiterName: name });
     }
 
     render() {

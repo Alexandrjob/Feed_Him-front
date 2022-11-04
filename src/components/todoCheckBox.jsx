@@ -1,14 +1,9 @@
-const React = require("react");
+import React from "react";
 import {
     Checkbox
 } from '@mui/material';
 
 class TodoCheckBox extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <Checkbox
