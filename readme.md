@@ -68,6 +68,7 @@ bundle.js.map
 - [x] Добавить крутое README
 - [x] Всё переписать
 - [x] Написать запросы на бэк
+- [ ] Обновлять bundle.js при его изменении у всех клиентов
 
 ## Источники
 Макет сайта -  https://www.behance.net/gallery/146894393/To-do-list-yandex-test
