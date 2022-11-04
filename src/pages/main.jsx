@@ -1,4 +1,4 @@
-const React = require("react");
+import React from "react";
 import {
     Box,
     Container,
@@ -29,7 +29,7 @@ function getFormatData(data) {
     //Каждая ячейка олицетворяет один день.
     for (let i = 0; i < data.length; i++) {
         box[data[i].servingNumber - 1] = data[i];
-        if (data[i].servingNumber == trueNumberServings) {
+        if (data[i].servingNumber === trueNumberServings) {
             formatData[countDay] = box;
             box = [];
 
@@ -94,7 +94,7 @@ class Main extends React.Component {
 
         // обработчик получения ответа сервера
         xhr.onload = () => {
-            if (xhr.status == 200) {
+            if (xhr.status === 200) {
                 console.log(xhr.responseText);
             } else {
                 console.log("Server response: ", xhr.statusText);

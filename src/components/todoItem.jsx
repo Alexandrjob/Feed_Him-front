@@ -1,4 +1,4 @@
-const React = require("react");
+import React from "react";
 import {
     ListItem,
     ListItemText
@@ -6,10 +6,6 @@ import {
 import TodoCheckBox from './todoCheckBox';
 
 class TodoItem extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
     render() {
         const labelTextId = `checkbox-list-secondary-label-${this.props.keyy}`;
         let textSecondary;

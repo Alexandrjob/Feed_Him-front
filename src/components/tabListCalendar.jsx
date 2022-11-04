@@ -1,4 +1,4 @@
-const React = require("react");
+import React from "react";
 import {
     Tab,
 } from '@mui/material';
@@ -45,7 +45,7 @@ function getDaysArray() {
             number: (i + 1),
             name: days[index++]
         })
-        if (index == 7) index = 0;
+        if (index === 7) index = 0;
     }
 
     return arrayTab;
