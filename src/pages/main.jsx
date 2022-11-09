@@ -17,7 +17,7 @@ var container = {
     transform: 'translate(-50%, -20%)',
 };
 
-//Метод объединяет 3 обьекта в один начиная с первого(Внимание: говно код).
+//Метод объединяет все обьекты одного дня в один начиная с первого.
 function getFormatData(data) {
     const trueNumberServings = getNumberServings(data);
     let formatData = [];
@@ -25,7 +25,7 @@ function getFormatData(data) {
     let countDay = 0;
 
     //Массив формируется следующим образом =>
-    //В каждой ячейче(box) по 3 массива.
+    //В каждой ячейче(box) по trueNumberServings массива.
     //Каждая ячейка олицетворяет один день.
     for (let i = 0; i < data.length; i++) {
         box[data[i].servingNumber - 1] = data[i];
@@ -88,8 +88,7 @@ class Main extends React.Component {
     send(data) {
         const xhr = new XMLHttpRequest();
 
-        // POST-запрос к ресурсу /user
-        xhr.open("POST", this.state.url);
+        xhr.open("PUT", this.state.url);
         xhr.setRequestHeader("content-type", "application/json");
 
         // обработчик получения ответа сервера
