@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     List,
     Box,
@@ -9,13 +9,12 @@ import TabPanel from '@mui/lab/TabPanel';
 import TodoItem from './todoItem';
 
 export default function TabPanelTodo(props) {
-    console.log("Вызвали");
     const tabPanel = {
         width: "100%",
         padding: "0px",
         centered: "true"
     };
-    
+
     const list = {
         width: "100%",
         centered: "true"
@@ -23,21 +22,22 @@ export default function TabPanelTodo(props) {
 
     const checkDisabledItems = () => {
         let number = new Date().getDate();
-    
+
         if (number == props.value) {
             return false;
         }
-    
+
         return true;
     }
-    const disabledItem = checkDisabledItems();
+    const disabledItemm = checkDisabledItems();
 
     const genereteTodoItems = (index, itemDay, disabledItem, handleChangeCheckBox) => {
         const items = itemDay.map((item, indexInList) => {
             let backColor;
             const date = new Date(item.estimatedDateFeeding);
-            const extendedDate = new Date(date).setMinutes(date.getMinutes() + 10);
+            let extendedDate = new Date(date);
             const currentDate = new Date();
+            extendedDate.setMinutes(date.getMinutes() + 10);
 
             if (item.status) {
                 backColor = "#95ffa6";
@@ -63,7 +63,7 @@ export default function TabPanelTodo(props) {
                         №{indexInList + 1} {date.toLocaleTimeString().slice(0, -3)}
                     </Typography>
                     <Divider />
-                    <TodoItem name={index + ' ' + indexInList} servingNumber={indexInList + 1}
+                    <TodoItem key={indexInList} keyy={indexInList} name={index + ' ' + indexInList} servingNumber={indexInList + 1}
                         date={item.date} waiterName={item.waiterName} disabled={disabledItem} checked={item.status} handleChange={handleChangeCheckBox} />
                 </Box>;
 
@@ -77,7 +77,7 @@ export default function TabPanelTodo(props) {
         props.data.map((item, index) =>
             <TabPanel sx={tabPanel} key={(index + 1).toString()} value={(index + 1).toString()}>
                 <List dense sx={list} key={index}>
-                    {genereteTodoItems(index, item, disabledItem, props.handleChangeCheckBox)}
+                    {genereteTodoItems(index, item, disabledItemm, props.handleChangeCheckBox)}
                 </List>
             </TabPanel>
         )

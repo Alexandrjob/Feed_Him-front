@@ -26,7 +26,8 @@ export default function TodoItem(props) {
                 <TodoCheckBox checked={!!props.checked}
                     name={props.name}
                     disabled={props.disabled}
-                    handleChange={props.handleChange} />
+                    handleChange={props.handleChange} 
+                    key={props.keyy}/>
             }
             disablePadding>
             <ListItemText
