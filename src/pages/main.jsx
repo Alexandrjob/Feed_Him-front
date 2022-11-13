@@ -13,7 +13,7 @@ var container = {
     position: 'absolute',
     width: "50%",
     left: '50%',
-    top: '10%',
+    top: '15%',
     transform: 'translate(-50%, -20%)',
 };
 
@@ -28,6 +28,7 @@ function getFormatData(data) {
     //В каждой ячейче(box) по trueNumberServings массива.
     //Каждая ячейка олицетворяет один день.
     for (let i = 0; i < data.length; i++) {
+        data[i].estimatedDateFeeding = new Date(data[i].estimatedDateFeeding).toLocaleTimeString().slice(0, -3);
         box[data[i].servingNumber - 1] = data[i];
         if (data[i].servingNumber === trueNumberServings) {
             formatData[countDay] = box;
@@ -36,7 +37,7 @@ function getFormatData(data) {
             countDay++;
         }
     }
-
+    
     return formatData;
 }
 
@@ -123,9 +124,8 @@ class Main extends React.Component {
     };
 
     handleChangeCheckBox(event) {
-        //pach - это поле, генерируемое вот так name={index + ' ' + item[0].id}  
+        //pach - это поле, генерируемое вот так name={index + ' ' + indexInList}  
         let pach = event.target.name.split(' ');
-
         let diet = this.state.formatData[pach[0]][pach[1]];
 
         if (event.target.checked) {

@@ -1,7 +1,7 @@
 import React from "react";
 import {
     ListItem,
-    ListItemText
+    ListItemText,
 } from '@mui/material';
 import TodoCheckBox from './todoCheckBox';
 
@@ -17,7 +17,7 @@ export default function TodoItem(props) {
     }
     else {
         var date = getFormatString(props.date);
-        textSecondary = date + ' ' + props.waiterName;
+        textSecondary = "Покормленно в " + date + ' ' + props.waiterName;
     }
 
     return (
@@ -30,7 +30,6 @@ export default function TodoItem(props) {
             }
             disablePadding>
             <ListItemText
-                primary={`${props.servingNumber} прием`}
                 secondary={textSecondary}
             />
         </ListItem>
