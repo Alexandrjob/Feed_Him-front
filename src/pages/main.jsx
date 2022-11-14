@@ -16,7 +16,7 @@ var container = {
     transform: 'translate(-50%, -0%)',
 };
 
-//Метод объединяет все обьекты одного дня в один начиная с первого.
+//Метод объединяет все обьекты одного дня в один.
 function getFormatData(data) {
     const trueNumberServings = getNumberServings(data);
     let formatData = [];
@@ -28,6 +28,7 @@ function getFormatData(data) {
     //Каждая ячейка олицетворяет один день.
     for (let i = 0; i < data.length; i++) {
         box[data[i].servingNumber - 1] = data[i];
+        box[data[i].servingNumber - 1].backColor = getBackColor(data[i]);
         if (data[i].servingNumber === trueNumberServings) {
             formatData[countDay] = box;
             box = [];
@@ -51,6 +52,35 @@ function getNumberServings(data) {
     }
 
     return max;
+}
+
+function getBackColor(item) {
+    const DONE = "#95ffa696";
+    const WARNING = "#ffa095";
+
+    const date = new Date(item.estimatedDateFeeding);
+    let extendedDate = new Date(date);
+    extendedDate.setMinutes(date.getMinutes() + 10);
+    const currentDate = new Date();
+
+    if (item.status) {
+        return DONE;
+    }
+    if (!item.status && date.getDate() < currentDate.getDate()) {
+        return WARNING;
+    }
+    if (!item.status && date.getDate() > currentDate.getDate()) {
+        return "";
+    }
+    if (date.getHours() < currentDate.getHours()) {
+        return WARNING;
+    }
+    if (date.getHours() === currentDate.getHours() &&
+        extendedDate.getMinutes() < currentDate.getMinutes()) {
+        return WARNING;
+    }
+
+    return "";
 }
 
 class Main extends React.Component {
@@ -122,24 +152,26 @@ class Main extends React.Component {
     };
 
     handleChangeCheckBox(event) {
+        const DONE = "#95ffa696";
         //pach - это поле, генерируемое вот так name={index + ' ' + indexInList}  
         let pach = event.target.name.split(' ');
         let diet = this.state.formatData[pach[0]][pach[1]];
 
         if (event.target.checked) {
-            diet = this.updateDietInFormatData(diet, pach, this.props.waiterName, new Date(), event.target.checked);
+            diet = this.updateDietInFormatData(diet, pach, this.props.waiterName, new Date(), event.target.checked, DONE);
             this.send(diet);
             return;
         }
 
-        diet = this.updateDietInFormatData(diet, pach, null, null, null);
+        diet = this.updateDietInFormatData(diet, pach, null, null, null, "");
         this.send(diet);
     }
 
-    updateDietInFormatData(diet, pach, name, date, checked) {
+    updateDietInFormatData(diet, pach, name, date, checked, color) {
         diet.waiterName = name;
         diet.date = date;
         diet.status = checked;
+        diet.backColor = color;
 
         //Рука лицо, ну а как по другому? только хуками, но пока этим заниматься не буду.
         let updateFormatData = this.state.formatData;
@@ -153,7 +185,7 @@ class Main extends React.Component {
     render() {
         return (
             <Container sx={container}>
-                <Typography sx={{ marginBottom: '20px',marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
+                <Typography sx={{ marginBottom: '20px', marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
                 <TabContext value={this.state.value}>
                     <Box >
                         <TabListCalendar onChange={this.handleChangeTab} />
