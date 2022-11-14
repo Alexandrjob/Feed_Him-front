@@ -9,7 +9,6 @@ import TabPanel from '@mui/lab/TabPanel';
 import TodoItem from './todoItem';
 
 export default function TabPanelTodo(props) {
-    console.log("Вызвали");
     const tabPanel = {
         width: "100%",
         padding: "0px",
@@ -34,31 +33,9 @@ export default function TabPanelTodo(props) {
 
     const genereteTodoItems = (index, itemDay, disabledItem, handleChangeCheckBox) => {
         const items = itemDay.map((item, indexInList) => {
-            let backColor;
             const date = new Date(item.estimatedDateFeeding);
-            const extendedDate = new Date(date).setMinutes(date.getMinutes() + 10);
-            const currentDate = new Date();
-
-            if (item.status) {
-                backColor = "#95ffa6";
-            }
-            else if (date.getDate() === currentDate.getDate()) {
-                if (date.getHours() < currentDate.getHours()) {
-                    backColor = "#ffa095";
-                }
-                else if (date.getHours() === currentDate.getHours()) {
-                    if (extendedDate.getMinutes() < currentDate.getMinutes()) {
-                        backColor = "#ffa095";
-                    }
-                }
-            }
-
-            if (!item.status && date.getDate() < currentDate.getDate()) {
-                backColor = "#ffa095";
-            }
-
             const box =
-                <Box key={indexInList} sx={{ boxShadow: 2, borderRadius: 2, marginBottom: "10px", padding: "10px", backgroundColor: backColor }}>
+                <Box key={indexInList} sx={{ boxShadow: 2, borderRadius: 2, marginBottom: "10px", padding: "10px", backgroundColor: item.backColor }}>
                     <Typography variant="subtitle1" color="text.primary">
                         №{indexInList + 1} {date.toLocaleTimeString().slice(0, -3)}
                     </Typography>
