@@ -129,10 +129,13 @@ class Main extends React.Component {
             }
         };
 
-        var normalTypeDate = new Date(Date(data.date));
+        var normalTypeDate = null;
+        if(data.date != null){   
         //Добавляем часы в соответствии с часовым поясом. 
         //Причина: парсинг json отнимает часовой пояс.
+        normalTypeDate = new Date(data.date);
         normalTypeDate.setUTCHours(normalTypeDate.getUTCHours() + 7);
+        }
 
         var jsonData = JSON.stringify({
             id: data.id,
