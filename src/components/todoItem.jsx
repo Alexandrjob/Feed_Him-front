@@ -17,7 +17,7 @@ export default function TodoItem(props) {
     }
     else {
         var date = getFormatString(props.date);
-        textSecondary = "Покормленно в " + date + ' ' + props.waiterName;
+        textSecondary = date + ' ' + props.waiterName;
     }
 
     return (

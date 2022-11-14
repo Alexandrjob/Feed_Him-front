@@ -39,12 +39,14 @@ function getDaysArray() {
 
     var arrayTab = [];
     var index = todayDayNumber;
-
+    
+    index++;
     for (var i = 0; i < daysInMonth; i++) {
         arrayTab.push({
             number: (i + 1),
-            name: days[index++]
+            name: days[index]
         })
+        index++;
         if (index === 7) index = 0;
     }
 
