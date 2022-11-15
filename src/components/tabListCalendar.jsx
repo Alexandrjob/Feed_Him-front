@@ -35,12 +35,13 @@ function getDaysArray() {
     const days = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
     const date = new Date();
     const daysInMonth = date.daysInMonth();
-    const todayDayNumber = date.getDay();
+    
+    const dateMonthFirstDay = new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0);
+    const firstDayNumber = dateMonthFirstDay.getDay();
 
     var arrayTab = [];
-    var index = todayDayNumber;
-    
-    index++;
+    var index = firstDayNumber;
+
     for (var i = 0; i < daysInMonth; i++) {
         arrayTab.push({
             number: (i + 1),
