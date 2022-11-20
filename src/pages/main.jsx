@@ -83,6 +83,10 @@ function getBackColor(item) {
     return "";
 }
 
+function generateTabList(handle) {
+    return <TabListCalendar onChange={handle} />
+};
+
 class Main extends React.Component {
     constructor(props) {
         super(props);
@@ -94,6 +98,7 @@ class Main extends React.Component {
             value: new Date().getDate().toString(),
             disabledItem: false,
             formatData: [],
+            tabList: <></>
         };
         this.handleChangeTab = this.handleChangeTab.bind(this);
         this.handleChangeCheckBox = this.handleChangeCheckBox.bind(this);
@@ -110,7 +115,7 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ loading: true });
+        this.setState({ tabList:generateTabList(this.handleChangeTab) });
         this.loadData();
     }
 
@@ -190,15 +195,12 @@ class Main extends React.Component {
             <Container sx={container}>
                 <Typography sx={{ marginBottom: '20px', marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
                 <TabContext value={this.state.value}>
-                    <Box >
-                        <TabListCalendar onChange={this.handleChangeTab} />
+                    <Box >  
+                        {this.state.tabList}
                     </Box>
                     <Typography sx={{ marginTop: '20px' }} variant="h6">Сегодня</Typography>
-                    {this.state.loading
-                        ? <Typography sx={{ marginBottom: '20px', textAlign: 'center' }} variant="h4">Грузим</Typography>
-                        : <TabPanelTodo data={this.state.formatData} value={this.state.value}
+                         <TabPanelTodo loading={this.state.loading}  data={this.state.formatData} value={this.state.value}
                             handleChangeCheckBox={this.handleChangeCheckBox} />
-                    }
                 </TabContext>
             </Container >
         )
