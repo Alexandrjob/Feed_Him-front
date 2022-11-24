@@ -1,6 +1,9 @@
 ﻿import React from "react";
 import Lobby from "./pages/lobby";
 import Main from "./pages/main";
+import Registration from "./pages/Registration";
+import Login from "./pages/Login";
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 const names = ["Саша", "Катя", "Наташа", "Лариса"];
 
@@ -38,40 +41,35 @@ function getWight() {
 }
 
 class App extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            waiterName: null,
+            auth: false,
+            url: "http://localhost:5000/api",
             width: getWight(),
         };
 
-        this.onChange = this.onChange.bind(this);
-    }
+        let token = window.localStorage.getItem('token');
+        let name = window.localStorage.getItem('name');
 
-    componentDidMount() {
-        let name = getCookie("waiterName");
-
-        if (!!!name) {
-            this.setState({ waiterName: null });
-            return;
+        if (token != null && name != null) {
+            this.state.auth = true;
         }
 
-        this.setState({ waiterName: name });
+        this.changeAuth = this.changeAuth.bind(this);
     }
 
-    onChange(id) {
-        let name = names[id];
-        document.cookie = "waiterName=" + name;
-
-        this.setState({ waiterName: name });
+    changeAuth(newAuth) {
+        this.setState({ auth: newAuth });
     }
 
     render() {
         return (
-            this.state.waiterName == null
-                ? <Lobby width={this.state.width} handleChange={this.onChange} />
-                : <Main width={this.state.width} waiterName={this.state.waiterName} />
+            <Routes>
+                <Route path="/" element={<Main width={this.state.width} auth={this.state.auth} url={this.state.url} waiterName={this.state.waiterName} />} />
+                <Route path="/singin" element={<Login auth={this.state.auth} changeNameHandle={this.changeName} changeAuthHandle={this.changeAuth} url={this.state.url} />} />
+                <Route path="/singup" element={<Registration auth={this.state.auth} url={this.state.url} />} />
+            </Routes>
         );
     }
 }

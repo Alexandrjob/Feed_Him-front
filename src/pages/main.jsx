@@ -4,6 +4,8 @@ import {
     Container,
     Typography
 } from '@mui/material';
+import { Navigate } from "react-router-dom";
+
 import TabContext from '@mui/lab/TabContext';
 import TabPanelTodo from '../components/tabPanelTodo';
 
@@ -93,7 +95,7 @@ class Main extends React.Component {
         container.width = props.width;
 
         this.state = {
-            url: "https://localhost:7146/api/diets",
+            url: props.url + "/diets",
             loading: true,
             value: new Date().getDate().toString(),
             disabledItem: false,
@@ -105,8 +107,11 @@ class Main extends React.Component {
     }
 
     loadData() {
+        const token = window.localStorage.getItem('token');
+
         var xhr = new XMLHttpRequest();
-        xhr.open("get", this.state.url, true);
+        xhr.open("GET", this.state.url, true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
         xhr.onload = function () {
             var result = JSON.parse(xhr.responseText);
             this.setState({ formatData: getFormatData(result.value), loading: false });
@@ -115,17 +120,19 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ tabList:generateTabList(this.handleChangeTab) });
-        this.loadData();
+        if (this.props.auth) {
+            this.setState({ tabList: generateTabList(this.handleChangeTab) });
+            this.loadData();
+        }
     }
 
     send(data) {
         const xhr = new XMLHttpRequest();
-
+        const token = window.localStorage.getItem('token');
         xhr.open("PUT", this.state.url);
         xhr.setRequestHeader("content-type", "application/json");
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
 
-        // обработчик получения ответа сервера
         xhr.onload = () => {
             if (xhr.status === 200) {
                 console.log(xhr.responseText);
@@ -135,11 +142,11 @@ class Main extends React.Component {
         };
 
         var normalTypeDate = null;
-        if(data.date != null){   
-        //Добавляем часы в соответствии с часовым поясом. 
-        //Причина: парсинг json отнимает часовой пояс.
-        normalTypeDate = new Date(data.date);
-        normalTypeDate.setUTCHours(normalTypeDate.getUTCHours() + 7);
+        if (data.date != null) {
+            //Добавляем часы в соответствии с часовым поясом. 
+            //Причина: парсинг json отнимает часовой пояс.
+            normalTypeDate = new Date(data.date);
+            normalTypeDate.setUTCHours(normalTypeDate.getUTCHours() + 7);
         }
 
         var jsonData = JSON.stringify({
@@ -150,7 +157,7 @@ class Main extends React.Component {
             status: Boolean(data.status),
         });
 
-        xhr.send(jsonData);     // отправляем значение user в методе send
+        xhr.send(jsonData);
     }
 
     handleChangeTab(event, newValue) {
@@ -164,9 +171,9 @@ class Main extends React.Component {
         //pach - это поле, генерируемое вот так name={index + ' ' + indexInList}  
         let pach = event.target.name.split(' ');
         let diet = this.state.formatData[pach[0]][pach[1]];
-
+        let name = window.localStorage.getItem('name');
         if (event.target.checked) {
-            diet = this.updateDietInFormatData(diet, pach, this.props.waiterName, new Date(), event.target.checked, DONE);
+            diet = this.updateDietInFormatData(diet, pach, name, new Date(), event.target.checked, DONE);
             this.send(diet);
             return;
         }
@@ -191,18 +198,21 @@ class Main extends React.Component {
     }
 
     render() {
+
         return (
-            <Container sx={container}>
-                <Typography sx={{ marginBottom: '20px', marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
-                <TabContext value={this.state.value}>
-                    <Box >  
-                        {this.state.tabList}
-                    </Box>
-                    <Typography sx={{ marginTop: '20px' }} variant="h6">Сегодня</Typography>
-                         <TabPanelTodo loading={this.state.loading}  data={this.state.formatData} value={this.state.value}
+            !this.props.auth
+                ? <Navigate to="/singin" />
+                : <Container sx={container}>
+                    <Typography sx={{ marginBottom: '20px', marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
+                    <TabContext value={this.state.value}>
+                        <Box >
+                            {this.state.tabList}
+                        </Box>
+                        <Typography sx={{ marginTop: '20px' }} variant="h6">Сегодня</Typography>
+                        <TabPanelTodo loading={this.state.loading} data={this.state.formatData} value={this.state.value}
                             handleChangeCheckBox={this.handleChangeCheckBox} />
-                </TabContext>
-            </Container >
+                    </TabContext>
+                </Container >
         )
     }
 }
