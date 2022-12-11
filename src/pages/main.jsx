@@ -196,23 +196,23 @@ class Main extends React.Component {
 
         return diet;
     }
-
+    // !this.props.auth
+    //     ? <Navigate to="/singin" />
+    //     : 
     render() {
 
         return (
-            !this.props.auth
-                ? <Navigate to="/singin" />
-                : <Container sx={container}>
-                    <Typography sx={{ marginBottom: '20px', marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
-                    <TabContext value={this.state.value}>
-                        <Box >
-                            {this.state.tabList}
-                        </Box>
-                        <Typography sx={{ marginTop: '20px' }} variant="h6">Сегодня</Typography>
-                        <TabPanelTodo loading={this.state.loading} data={this.state.formatData} value={this.state.value}
-                            handleChangeCheckBox={this.handleChangeCheckBox} />
-                    </TabContext>
-                </Container >
+            <Container sx={container}>
+                <Typography sx={{ marginBottom: '20px', marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
+                <TabContext value={this.state.value}>
+                    <Box >
+                        {this.state.tabList}
+                    </Box>
+                    <Typography sx={{ marginTop: '20px' }} variant="h6">Сегодня</Typography>
+                    <TabPanelTodo loading={this.state.loading} data={this.state.formatData} value={this.state.value}
+                        handleChangeCheckBox={this.handleChangeCheckBox} />
+                </TabContext>
+            </Container >
         )
     }
 }

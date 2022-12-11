@@ -1,6 +1,6 @@
 ﻿import React from "react";
-import Lobby from "./pages/lobby";
 import Main from "./pages/main";
+import Panel from "./pages/Panel/Panel"
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -67,6 +67,7 @@ class App extends React.Component {
         return (
             <Routes>
                 <Route path="/" element={<Main width={this.state.width} auth={this.state.auth} url={this.state.url} waiterName={this.state.waiterName} />} />
+                <Route path="/panel" element={<Panel auth={this.state.auth} url={this.state.url} />}/>
                 <Route path="/singin" element={<Login auth={this.state.auth} changeNameHandle={this.changeName} changeAuthHandle={this.changeAuth} url={this.state.url} />} />
                 <Route path="/singup" element={<Registration auth={this.state.auth} url={this.state.url} />} />
             </Routes>
