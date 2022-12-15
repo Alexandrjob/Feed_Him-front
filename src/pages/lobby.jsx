@@ -33,10 +33,8 @@ class Lobby extends React.Component {
                         aria-label="vertical contained button group"
                         fullWidth={true}
                         variant="text">
-                        <Button key="0" onClick={() => this.props.handleChange(0)}>Саша</Button>
-                        <Button key="1" onClick={() => this.props.handleChange(1)}>Катя</Button>
-                        <Button key="2" onClick={() => this.props.handleChange(2)}>Наташа</Button>
-                        <Button key="3" onClick={() => this.props.handleChange(3)}>Лариса</Button>
+                        <Button key="0" onClick={() => this.props.handleChange(0)}>Наташа</Button>
+                        <Button key="1" onClick={() => this.props.handleChange(1)}>Андрей</Button>
                     </ButtonGroup>
                 </Container>
             </Box >
