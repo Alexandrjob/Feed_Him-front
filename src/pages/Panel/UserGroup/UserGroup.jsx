@@ -54,7 +54,6 @@ export default function UserGroup(props) {
             if (xhr.status === 200) {
                 if (methodType == 'POST') {
                     console.log('Вышел с группы');
-                    window.localStorage.setItem('token', xhr.responseText);
                     props.handleLoad();
                     navigate('/panel');
                     return;
@@ -98,7 +97,7 @@ export default function UserGroup(props) {
                             key={indexInList}
                             endAction={
                                 props.isCreator ?
-                                    <IconButton aria-label="Delete" size="sm" color="danger" onClick={props.handleChangeGroup}>
+                                    <IconButton name={indexInList} aria-label="Delete" size="sm" color="danger" onClick={() => props.handleChangeGroup(indexInList)}>
                                         <Delete />
                                     </IconButton>
                                     : (<></>)}>

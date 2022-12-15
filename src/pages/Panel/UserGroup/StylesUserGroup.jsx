@@ -40,7 +40,7 @@ export const ListItemButton = styled(ListItemButtonD)`
 `;
 
 export const ButtonLink = styled(Button)`
-    width: 30%;
+    width: 100px;
     margin-right: 12px;
 `;
 

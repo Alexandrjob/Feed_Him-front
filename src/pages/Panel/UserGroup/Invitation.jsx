@@ -33,9 +33,7 @@ export default function Invitation(props) {
         xhr.setRequestHeader("content-type", "text/plain");
         xhr.onload = () => {
             if (xhr.status === 200) {
-
                 console.log('Принял приглос');
-                window.localStorage.setItem('token', xhr.responseText);
                 props.handleLoad();
                 navigate('/panel');
                 return;

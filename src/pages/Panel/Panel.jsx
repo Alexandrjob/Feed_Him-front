@@ -91,10 +91,10 @@ export default function Panel(props) {
         var url = props.url + '/users';
         var methodType = "GET";
 
-        send(url, methodType);
+        get(url, methodType);
     }
 
-    const send = (url, methodType) => {
+    const get = (url, methodType) => {
         const token = window.localStorage.getItem('token');
         const xhr = new XMLHttpRequest();
         xhr.open(methodType, url);
@@ -124,6 +124,35 @@ export default function Panel(props) {
         xhr.send();
     };
 
+    const removeUser = (user) => {
+        var url = props.url + '/groups/remove';
+        var methodType = "POST";
+
+        var jsonData = JSON.stringify({
+            email: user.email
+        });
+        console.log(jsonData);
+        send(url, methodType, jsonData);
+    }
+
+    const send = (url, methodType, jsonData) => {
+        const token = window.localStorage.getItem('token');
+        const xhr = new XMLHttpRequest();
+        xhr.open(methodType, url);
+
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                loadData();
+            } else {
+                console.log("Server response: ", xhr.status);
+            }
+        };
+
+        xhr.send(jsonData);
+    };
+
     const handleChangeInformation = e => {
         const { name, value } = e.target;
         setInformation(prevState => ({
@@ -131,6 +160,7 @@ export default function Panel(props) {
             [name]: value
         }));
     };
+    
     const handleChangeFeeding = e => {
         const { name, value } = e.target;
         setFeeding(prevState => ({
@@ -138,12 +168,10 @@ export default function Panel(props) {
             [name]: value
         }));
     };
-    const handleChangeGroup = e => {
-        const { name, value } = e.target;
-        setGroup(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+
+    const handleChangeGroup = (indexInList) => {
+        let user = group[indexInList];
+        removeUser(user);
     };
 
     return (
