@@ -21,16 +21,20 @@ export default function UserInformation(props) {
                     <Typography level="body2">check or change your information as you want</Typography>
                 </div>
                 <TextField
-                    name="User name"
+                    name="name"
+                    value={props.information.name}
                     type="text"
-                    placeholder="Sasha"
+                    placeholder="Enter your name"
                     label="User name"
+                    onChange={props.handleChangeInf}
                 />
                 <TextField
                     name="email"
+                    value={props.information.email}
                     type="email"
-                    placeholder="Sasha@gmail.com"
+                    placeholder="Enter your email"
                     label="Email"
+                    onChange={props.handleChangeInf}
                 />
                 <Button >Update</Button>
             </Sheet>

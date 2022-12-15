@@ -25,9 +25,9 @@ export default function UserProfile(props) {
 
     return (
         <BoxN>
-            <Avatar sx={{ "--Avatar-size": '130px', marginTop: '-65px' }} size="lg">Sa</Avatar>
-            <Typography sx={{ marginTop: '0.75rem', }} level="h4">Sasha</Typography>
-            <Typography level="body1">MyEmail@gmail.com</Typography>
+            <Avatar sx={{ "--Avatar-size": '130px', marginTop: '-65px' }} size="lg"></Avatar>
+            <Typography sx={{ marginTop: '0.75rem', }} level="h4">{props.information.name}</Typography>
+            <Typography level="body1">{props.information.email}</Typography>
         </BoxN>
     );
 }

@@ -120,13 +120,15 @@ export default function SignIn(props) {
                 sethelperText("Incorrect data");
             }
             else {
-                console.log("Server response: ", result.statusCode);
+                console.log("Server response: ", xhr.status);
             }
         };
 
         var jsonData = JSON.stringify({
             email: data.get('email'),
+            name: 'string',//TODO: delete
             password: data.get('password'),
+            token: 'string',//TODO: delete
         });
         xhr.send(jsonData);
     };

@@ -67,7 +67,8 @@ class App extends React.Component {
         return (
             <Routes>
                 <Route path="/" element={<Main width={this.state.width} auth={this.state.auth} url={this.state.url} waiterName={this.state.waiterName} />} />
-                <Route path="/panel" element={<Panel auth={this.state.auth} url={this.state.url} />}/>
+                <Route path="/panel" element={<Panel focusTab={0} auth={this.state.auth} url={this.state.url} />}/>
+                <Route path="/panel/group/invitation/:nameGroup/:invitation" element={<Panel focusTab={3} auth={this.state.auth} url={this.state.url} />}/>
                 <Route path="/singin" element={<Login auth={this.state.auth} changeNameHandle={this.changeName} changeAuthHandle={this.changeAuth} url={this.state.url} />} />
                 <Route path="/singup" element={<Registration auth={this.state.auth} url={this.state.url} />} />
             </Routes>
