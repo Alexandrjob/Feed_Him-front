@@ -2,7 +2,7 @@
 import Lobby from "./pages/lobby";
 import Main from "./pages/main";
 
-const names = ["Саша", "Катя", "Наташа", "Лариса"];
+const names = ["Наташа", "Андрей"];
 
 // возвращает куки с указанным name,
 // или undefined, если ничего не найдено
