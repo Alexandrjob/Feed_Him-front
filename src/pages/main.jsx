@@ -1,4 +1,5 @@
 import React from "react";
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import {
     Box,
     Container,
@@ -93,7 +94,8 @@ class Main extends React.Component {
         container.width = props.width;
 
         this.state = {
-            url: "https://localhost:7146/api/diets",
+            url: "https://localhost:7146",
+            connection: '',
             loading: true,
             value: new Date().getDate().toString(),
             disabledItem: false,
@@ -106,26 +108,51 @@ class Main extends React.Component {
 
     loadData() {
         var xhr = new XMLHttpRequest();
-        xhr.open("get", this.state.url, true);
+        xhr.open("GET", this.state.url + "/api/diets", true);
         xhr.onload = function () {
             var result = JSON.parse(xhr.responseText);
             this.setState({ formatData: getFormatData(result.value), loading: false });
         }.bind(this);
         xhr.send();
+
+    }
+
+    async OnConnected() {
+        try {
+            const connection = new HubConnectionBuilder()
+                .withUrl("https://localhost:7146/hub")
+                .configureLogging(LogLevel.Information)
+                .build();
+
+            connection.on("UpdateDiet", (diet) => {
+                diet.backColor = getBackColor(diet);
+
+                let updateFormatData = this.state.formatData;
+                updateFormatData[diet.rowArray][diet.columnArray] = diet;
+                this.setState({ formatData: updateFormatData });
+                console.log(diet);
+            });
+
+            await connection.start();
+            await connection.invoke("OnConnectedAsync", this.props.waiterName);
+            this.setState({ connection: connection });
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     componentDidMount() {
-        this.setState({ tabList:generateTabList(this.handleChangeTab) });
+        this.setState({ tabList: generateTabList(this.handleChangeTab) });
         this.loadData();
+        this.OnConnected();
     }
 
-    send(data) {
+    send(data, pach) {
         const xhr = new XMLHttpRequest();
 
-        xhr.open("PUT", this.state.url);
+        xhr.open("PUT", this.state.url + "/api/diets");
         xhr.setRequestHeader("content-type", "application/json");
 
-        // обработчик получения ответа сервера
         xhr.onload = () => {
             if (xhr.status === 200) {
                 console.log(xhr.responseText);
@@ -135,11 +162,11 @@ class Main extends React.Component {
         };
 
         var normalTypeDate = null;
-        if(data.date != null){   
-        //Добавляем часы в соответствии с часовым поясом. 
-        //Причина: парсинг json отнимает часовой пояс.
-        normalTypeDate = new Date(data.date);
-        normalTypeDate.setUTCHours(normalTypeDate.getUTCHours() + 7);
+        if (data.date != null) {
+            //Добавляем часы в соответствии с часовым поясом. 
+            //Причина: парсинг json отнимает часовой пояс.
+            normalTypeDate = new Date(data.date);
+            normalTypeDate.setUTCHours(normalTypeDate.getUTCHours() + 7);
         }
 
         var jsonData = JSON.stringify({
@@ -148,9 +175,11 @@ class Main extends React.Component {
             waiterName: data.waiterName,
             date: normalTypeDate,
             status: Boolean(data.status),
+            rowArray: pach[0],
+            columnArray: pach[1]
         });
 
-        xhr.send(jsonData);     // отправляем значение user в методе send
+        xhr.send(jsonData);
     }
 
     handleChangeTab(event, newValue) {
@@ -167,12 +196,12 @@ class Main extends React.Component {
 
         if (event.target.checked) {
             diet = this.updateDietInFormatData(diet, pach, this.props.waiterName, new Date(), event.target.checked, DONE);
-            this.send(diet);
+            this.send(diet, pach);
             return;
         }
 
         diet = this.updateDietInFormatData(diet, pach, null, null, null, "");
-        this.send(diet);
+        this.send(diet, pach);
     }
 
     updateDietInFormatData(diet, pach, name, date, checked, color) {
@@ -195,12 +224,12 @@ class Main extends React.Component {
             <Container sx={container}>
                 <Typography sx={{ marginBottom: '20px', marginTop: '40px', textAlign: 'center' }} variant="h4">Покорми кота</Typography>
                 <TabContext value={this.state.value}>
-                    <Box >  
+                    <Box >
                         {this.state.tabList}
                     </Box>
                     <Typography sx={{ marginTop: '20px' }} variant="h6">Сегодня</Typography>
-                         <TabPanelTodo loading={this.state.loading}  data={this.state.formatData} value={this.state.value}
-                            handleChangeCheckBox={this.handleChangeCheckBox} />
+                    <TabPanelTodo loading={this.state.loading} data={this.state.formatData} value={this.state.value}
+                        handleChangeCheckBox={this.handleChangeCheckBox} />
                 </TabContext>
             </Container >
         )
