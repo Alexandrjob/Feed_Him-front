@@ -29,7 +29,7 @@ function getFormatData(data) {
     //Каждая ячейка олицетворяет один день.
     for (let i = 0; i < data.length; i++) {
         box[data[i].servingNumber - 1] = data[i];
-        box[data[i].servingNumber - 1].backColor = getBackColor(data[i]);
+        box[data[i].servingNumber - 1].backColor = getBackgroundColor(data[i]);
         if (data[i].servingNumber === trueNumberServings) {
             formatData[countDay] = box;
             box = [];
@@ -55,34 +55,27 @@ function getNumberServings(data) {
     return max;
 }
 
-function getBackColor(item) {
+function getBackgroundColor(item) {
     const DONE = "#95ffa696";
     const WARNING = "#ffa095";
-
-    const date = new Date(item.estimatedDateFeeding);
-    let extendedDate = new Date(date);
-    extendedDate.setMinutes(date.getMinutes() + 10);
-    const currentDate = new Date();
 
     if (item.status) {
         return DONE;
     }
-    if (!item.status && date.getDate() < currentDate.getDate()) {
-        return WARNING;
-    }
-    if (!item.status && date.getDate() > currentDate.getDate()) {
-        return "";
-    }
-    if (date.getHours() < currentDate.getHours()) {
-        return WARNING;
-    }
-    if (date.getHours() === currentDate.getHours() &&
-        extendedDate.getMinutes() < currentDate.getMinutes()) {
+
+    const scheduledDate = new Date(item.estimatedDateFeeding);
+    
+    let feedingDeadlineDate = new Date(scheduledDate);
+    feedingDeadlineDate.setMinutes(scheduledDate.getMinutes() + 10);
+    
+    const currentDate = new Date();
+
+    if (currentDate > feedingDeadlineDate) {
         return WARNING;
     }
 
-    return "";
-}
+    return "";  
+}   
 
 function generateTabList(handle) {
     return <TabListCalendar onChange={handle} />
@@ -109,9 +102,11 @@ class Main extends React.Component {
     loadData() {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.state.url + "/api/diets", true);
+        xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
         xhr.onload = function () {
             var result = JSON.parse(xhr.responseText);
-            this.setState({ formatData: getFormatData(result.value), loading: false });
+            console.log(result.diets);
+            this.setState({ formatData: getFormatData(result.diets), loading: false });
         }.bind(this);
         xhr.send();
 
@@ -120,17 +115,16 @@ class Main extends React.Component {
     async OnConnected() {
         try {
             const connection = new HubConnectionBuilder()
-                .withUrl("https://localhost:7146/hub")
+                .withUrl(this.state.url + "/hub")
                 .configureLogging(LogLevel.Information)
                 .build();
 
             connection.on("UpdateDiet", (diet) => {
-                diet.backColor = getBackColor(diet);
+                diet.backColor = getBackgroundColor(diet);
 
                 let updateFormatData = this.state.formatData;
                 updateFormatData[diet.rowArray][diet.columnArray] = diet;
                 this.setState({ formatData: updateFormatData });
-                console.log(diet);
             });
 
             await connection.start();
