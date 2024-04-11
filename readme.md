@@ -68,5 +68,12 @@ _Если файлы при загрузке на хостинг не отпра
 
 ## Demo
 
+### New
+![](https://github.com/Alexandrjob/TaskTrackerCat-front/blob/main/.github/assets/screenshot1.png?raw=true)
+![](https://github.com/Alexandrjob/TaskTrackerCat-front/blob/main/.github/assets/screenshot2.png?raw=true)
+![](https://github.com/Alexandrjob/TaskTrackerCat-front/blob/main/.github/assets/screenshot3.png?raw=true)
+![](https://github.com/Alexandrjob/TaskTrackerCat-front/blob/main/.github/assets/screenshot4.png?raw=true)
+
+### OLD
 ![](https://github.com/Alexandrjob/TaskTrackerCat-front/blob/main/.github/assets/lobby.png?raw=true)
 ![](https://github.com/Alexandrjob/TaskTrackerCat-front/blob/main/.github/assets/mainpage.png?raw=true)
